@@ -1,0 +1,30 @@
+bilang _input
+bilang _copy
+bilang _x
+_x = 0
+bilang _i
+itaga "Input N: "
+itaga bilang _input
+basahin bilang _input
+_copy = _input
+simula (_i = 0) hanggang (_input)
+simula
+	kapag (!(_copy == 0))
+	simula
+	
+		
+		_x = _x * 10
+		_x = _x + (_copy butal 10)
+		_copy = _copy / 10
+
+	wakas
+wakas
+
+kapag (_x == _input)
+simula
+	itaga "PALINDROME\n"
+wakas
+kapag (!(_x == _input))
+simula
+	itaga "NOT PALINDROME\n"
+wakas
