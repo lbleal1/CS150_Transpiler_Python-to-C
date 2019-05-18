@@ -1,69 +1,56 @@
-#Wikang Panuos [Translator to C]
-#Group Members: Cai, Maravillo, Terrobias, Villamera
-
-import sys 	#for sys.argv
-import re	#for regex
-import globals 
-import tokens_rules
-import lexeranalyzer
-import syntaxanalyzer #not used -lois
+import sys
+import re 
+import globals
+import regex_tokens_rules
+import lexicalanalyzer
 import translator
 import parser
 
-def addtab(string, tabcount):
-	for i in range(tabcount):
-		string += '\t'
-	return string
+def debug():
+	print("accessed")
 
 
-globals.initialize()  
-#python name_of_this_program.py program_in_OPL.something
-#OPL_file = open(sys.argv[1], "r")
-OPL_file = open("sample2.txt", "r")
-OPL_lines = OPL_file.readlines()#read all lines and save it
-OPL_file.close()				#close it, all is saved in OPL_lines
+globals.initialize()
+prime_stack = 0
+prime_main = 0
+prime_flag = 0
 
-replace = True
-final_string 	= ""
-problem_string	= ""
-final_string += "#include <stdio.h>\n"
-final_string += "#define bool int\n#define true 1\n#define false 0\n\n"
-#############################################################
-#parsing here
-#we append to final_string and problem_string here
-	#we also make replace to False if problem_string >= 1
-	#check each line separately
-globals.main_stack
-globals.simula_wakas
-globals.mainr
-
-for index, line in enumerate(OPL_lines):			#we need index too, for things like "Line X: something"
-	#print index
-	line = line.rstrip()							#remove trailing whitespaces
-	if (len(line) > 0):
-		if globals.main_stack == 0 and globals.mainr == 0:		#isang beses lng
-			final_string += "int main(){\n\n"
-			globals.mainr = 1
-			
-		replace, final_string, problem_string = parser.parser(index, line, final_string, problem_string)
-		
-	final_string += '\n'							#add newline
-	"""
-	#final_string = addtab(final_string, tabcount)
-	#print line
+	#file reading
+fname = input("Input file to read: ")
+fn = ""
+fn += fname[-5:-1]
+fn += fname[-1]
+if(fn.casefold() == '.abba'):
+	file = open(fname, "r")
+	line= file.readlines()
+	file.close()
 	
-	"""
-#############################################################
+	#initiate string to `
+	prime_str = ""
+	prime_str += "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n#include <math.h>\n"
+	error_str = ""
+		#perform translation and parsing as it traverses string
+	for i,lines in enumerate(line):
+		lines = lines.rstrip()
+		strlen = len(lines)
+		if(strlen > 0):	
+			validation,prime_str,error_str = parser.pirate_parser(i,lines,prime_str,error_str)
 
-final_string += "\n\treturn 0;\n"
-final_string += "}"	
-#we only make .exe files when compiling is successful right?
-#print final_string
-#print replace
-if replace == True:
-	C_file = open("C_file.c", "w+")
-	C_file.write(final_string)
-#print problem_string if there's problems
-elif replace == False:
-	print problem_string
-		
+		prime_str += "\n"
+		if(prime_flag == 1):
+			prime_str += '\t'
+			
+
+	#print final string to c file
+	#if no error detected -- print
+	#else print error
+	if(validation == 1):
+		write_file = open("pirate_to_c.c", "+w")
+		write_file.write(prime_str)
+
+	else:
+		print("error with file")
+		print(error_str)
+else:
+	print("\nCan't access file!\n\nCan only access '.abba' files")
+

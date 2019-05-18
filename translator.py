@@ -1,214 +1,363 @@
 import globals
 
-def translator(tokens, final_string):
+def pirate_translator(arr_tokens,prime_str):
+	#debug()
+	global prime_stack
+	global prime_flag
+	global prime_main
+	current_token = []
+	#[0]=read ; [1]=print; [2]=loop; [3]=semicolon
+	flag_set = [0,0,0,0]
+	init = "i"
+	pow_flag,pow_flag2 = 0,0
 
-	globals.main_stack
-	globals.simula_wakas
-	globals.mainr
-	
-	tokenInLine = []	
-	willRead = False
-	willLoop = False
-	willPrint = False
-	willSemiColon = False
-	initial = "i"
-	for index, eachtoken in enumerate(tokens[0]):
-		if eachtoken == globals.identifier and willRead == False and willLoop == False:
-			final_string += tokens[1][index].replace('_','')	
-		if eachtoken == globals.integer:
-			final_string += tokens[1][index]
-		if eachtoken == globals.float:
-			final_string += tokens[1][index]
+	for i, tokens in enumerate(arr_tokens[0]):
+		tok_len = len(current_token)
+		#####tab?#####
+
+		#####variables#####
+		if(tokens == globals.idty and flag_set[0] == 0	and flag_set[2] == 0 and pow_flag == 0):
+			arr_tokens[1][i] = arr_tokens[1][i].replace(' ','')
+			prime_str += arr_tokens[1][i].replace('var_','')
+		if((tokens == globals.integer or tokens == globals.floating) and pow_flag == 0):
+			prime_str += arr_tokens[1][i]
 		
-		bracketOnly = ("{" in tokenInLine or "}" in tokenInLine)
-		if eachtoken == globals.end and willLoop == False and 'gawain' not in tokenInLine and ((len(tokenInLine) > 1) or (len(tokenInLine) == 1 and not bracketOnly)) and "if" not in tokenInLine :
-			final_string += ";"
-			tokenInLine = []
-		if eachtoken == globals.lpar and willLoop == False:
-			final_string += "("	
-			tokenInLine.append("(")
-		if eachtoken == globals.rpar and willLoop == False:
-			final_string += ")"	
-			tokenInLine.append("(")
+		#####built in pow function#####
+		#if y var
+		if(tokens == globals.idty and pow_flag2 == 1):
+			arr_tokens[1][i] = arr_tokens[1][i].replace(' ','')
+			prime_str += arr_tokens[1][i].replace('var_','')
+			prime_str += ")"
+			pow_flag2 = 0
+			pow_flag = 0
+		#if x var
+		if(tokens == globals.idty and pow_flag == 1 and pow_flag2 == 0):
+			arr_tokens[1][i] = arr_tokens[1][i].replace(' ','')
+			prime_str += arr_tokens[1][i].replace('var_','')
+			prime_str += ","
+			pow_flag2 = 1
+		#if y int
+		if((tokens == globals.integer or tokens == globals.floating) and pow_flag2 == 1):
+			prime_str += arr_tokens[1][i]
+			prime_str += ")"
+			pow_flag2 = 0
+			pow_flag = 0
+		#if x int
+		if((tokens == globals.integer or tokens == globals.floating) and pow_flag == 1 and pow_flag2 == 0):
+			prime_str += arr_tokens[1][i]
+			prime_str += ","
+			pow_flag2 = 1
 
-# for functions		
-		if eachtoken == globals.simula and tokens[0][index+1] != globals.lpar:
-			globals.simula_wakas += 1	########################
-			final_string += "{ "
-			tokenInLine.append("{")
-		if eachtoken == globals.wakas:
-			globals.simula_wakas -= 1	########################
-			if globals.simula_wakas == 0:
-				globals.main_stack = 0
-				#print "HELLO", globals.simula_wakas
-			final_string += " }"
-			tokenInLine.append("}")
-		if eachtoken == globals.ibalik:
-			final_string += "return "
-			tokenInLine.append("return")
-		if eachtoken == globals.kawalan:
-			final_string += "void "	
-			tokenInLine.append("void")
-		if eachtoken == globals.formal_parameters:
-			tokens[1][index] = tokens[1][index].replace('globals.baybayin', 'char')
-			tokens[1][index] = tokens[1][index].replace('globals.bilang', 'int')
-			tokens[1][index] = tokens[1][index].replace('globals.lutang', 'float')
-			tokens[1][index] = tokens[1][index].replace('_','')
-			final_string += tokens[1][index]
-			tokenInLine.append('gawain')
-		if eachtoken == globals.informal_parameters:
-			tokens[1][index] = tokens[1][index].replace('_','')
-			final_string += tokens[1][index]
-			tokenInLine.append(tokens[1][index])
-		if 'gawain' in tokenInLine:
-			globals.main_stack = 1
-			
+		#####operations#####
+		if(tokens == globals.oper):
+			arr_tokens[1][i] = arr_tokens[1][i].strip()
+			#modulo
+			if(arr_tokens[1][i] == '%'):
+				prime_str += "%"
+				current_token.append("%")
+			#addition
+			if(arr_tokens[1][i] == '+'):
+				prime_str += "+"
+				current_token.append("+")
+			#subtraction
+			if(arr_tokens[1][i] == '-'):
+				prime_str += "-"
+				current_token.append("-")
+			#multiplication
+			if(arr_tokens[1][i] == '*'):
+				prime_str += "*"
+				current_token.append("*")
+			#special : exponent
+			if(arr_tokens[1][i] == '#'):
+				prime_str += "pow("
+				pow_flag = 1
+				current_token.append("pow")
+			#division
+			if(arr_tokens[1][i] == '/'):
+				prime_str += "/"
+				current_token.append("/")
+
+		#####comparators#####
+		#equals
+		if(tokens == globals.equate):
+			prime_str += " = "
+			current_token.append("=")
+		if(tokens == globals.comp):
+			#greater than or equal
+			if(arr_tokens[1][i]== '>= '):
+				prime_str += ">="
+				current_token.append(">=")
+			#less than or equal
+			if(arr_tokens[1][i] == '<= '):
+				prime_str += "<="
+				current_token.append("<=")
+			#equal
+			if(arr_tokens[1][i] == '== '):
+				prime_str += "=="
+				current_token.append("==")
+			#greater than
+			if(arr_tokens[1][i] == '> '):
+				prime_str += ">"
+				current_token.append("> ")
+			#less than
+			if(arr_tokens[1][i] == '< '):
+				prime_str += "<"
+				current_token.append("< ")
+		#not symbol
+		if(tokens == globals.nots):
+			prime_str += "!"
+			current_token.append("!")	
+
+		#####logic gates#####
+		if(tokens == globals.logic_gates):
+			if(arr_tokens[1][i])== '&& ':
+				prime_str += "&& "
+				current_token.append("&&")
+			#less than or equal
+			if(arr_tokens[1][i]) == '|| ':
+				prime_str += "|| "
+				current_token.append("||")
+
+		#####boolean#####
+		if(tokens == globals.boolean):
+			if(arr_tokens[1][i] == "aye"):
+				prime_str += "true"
+				current_token.append("true")
+			if(arr_tokens[1][i] == "nay"):
+				prime_str += "false"
+				current_token.append("false")
 		
-		
-		# printing (printf)	
-		if eachtoken == globals.itaga:
-			final_string += " printf"
-			tokenInLine.append("printf")
-			willPrint = True
-		if eachtoken == globals.string and tokens[0][index-1] == globals.itaga:
-			final_string += "("	
-			tokenInLine.append("(")
-		if eachtoken == globals.identifier and "printf" in tokenInLine:
-			final_string += ")"
-			willPrint = False
-			tokenInLine.append(")")	
-		if eachtoken == globals.string and "printf" in tokenInLine:
-			final_string += tokens[1][index]
-			final_string += ")"
-			willPrint = False
-			tokenInLine.append(")")
-		if eachtoken == globals.baybayin and willRead == False and willPrint == True:
-			final_string += '("%c",'
-			tokenInLine.append("char")
-		if eachtoken == globals.bilang and willRead == False and willPrint == True:
-			final_string += '("%d",'
-			tokenInLine.append("int")
-		if eachtoken == globals.lutang and willRead == False and willPrint == True:
-			final_string += '("%f",'
-			tokenInLine.append("float")		
+		####data types#####
+		#read globals.fathom to int
+		if(tokens == globals.fathom and flag_set[0] == 0 and flag_set[1] == 0):
+			prime_str += "int "
+			current_token.append("int")
+		#read league to float
+		if(tokens == globals.league and flag_set[0] == 0 and flag_set[1] == 0):
+			prime_str += "float "
+			current_token.append("float ")
+		#read draft to char
+		if(tokens == globals.draft and flag_set[0] == 0 and flag_set[1] == 0):
+			prime_str += "char "
+			current_token.append("char")
+		#read cutlass to double
+		if(tokens == globals.cutlass and flag_set[0] == 0 and flag_set[1] == 0):
+			prime_str += "double "
+			current_token.append("double")
+		#read argh_globals.fathom to int[]
+		if(tokens == globals.argh_fathom and flag_set[0] == 0 and flag_set[1] == 0):
+			prime_str += "int "
+			current_token.append("int_arr")
+		#read argh_league to float[]
+		if(tokens == globals.argh_league and flag_set[0] == 0 and flag_set[1] == 0):
+			prime_str += "float "
+			current_token.append("float_arr")
+		#read argh_draft to char[]
+		if(tokens == globals.argh_draft and flag_set[0] == 0 and flag_set[1] == 0):
+			prime_str += "char "
+			current_token.append("char_arr")
+		#read argh_cutlass to double[]
+		if(tokens == globals.argh_cutlass and flag_set[0] == 0 and flag_set[1] == 0):
+			prime_str += "double "
+			current_token.append("double_arr")
+		#open [ of array
+		if(tokens == globals.idty and tok_len == 1 and (current_token[0] == "int_arr" or current_token[0] == "float_arr"
+			or current_token[0] == "char_arr" or current_token[0] == "double_arr")):
+			prime_str += "["
+			current_token.append("[")
+		#case 1 of close ] of array
+		if(tok_len == 2 and (current_token[0] == "int_arr" or current_token[0] == "float_arr"
+			or current_token[0] == "char_arr" or current_token[0] == "double_arr") and current_token[1] == "["):
+			prime_str += "]"
+			current_token.append("]")
+		if(tokens == globals.sq_op and arr_tokens[0][i-1] == globals.idty):
+			prime_str += "["
+		if(tokens == globals.sq_cl and (arr_tokens[0][i-1] == globals.idty or arr_tokens[0][i-1] == globals.integer)):
+			prime_str += "]"
 
-		# reading (scanf)	
-		if eachtoken == globals.basahin:
-			final_string += 'scanf("' 
-			tokenInLine.append("scanf(")
-			willRead = True
-		if eachtoken == globals.identifier and willRead == True:
-			final_string += tokens[1][index].replace('_','')
-			final_string += ")"
-			tokenInLine.append(")")
-			willRead = False	
-		if eachtoken == globals.bilang and tokens[0][index-1] == globals.basahin:
-			final_string += '%d",&'
-		if eachtoken == globals.lutang and tokens[0][index-1] == globals.basahin:
-			final_string += '%f",&'
-			tokenInLine.append('%f')
-		if eachtoken ==  globals.char and tokens[0][index-1] == globals.basahin:
-			final_string += '%c",&'
-			tokenInLine.append('%c')
+		#####printf function######
+		if(tokens == globals.parley):
+			prime_str += "printf("
+			current_token.append("printf")
+			flag_set[1] = 1
+		#print int
+		if(tokens == globals.fathom and flag_set[0] == 0 and flag_set[1] == 1):
+			prime_str += '"%d",'
+			current_token.append("int")
+		#print float
+		if(tokens == globals.league and flag_set[0] == 0 and flag_set[1] == 1):
+			prime_str += '"%f",'
+			current_token.append("float")
+		#print char
+		if(tokens == globals.draft and flag_set[0] == 0 and flag_set[1] == 1):
+			prime_str += '"%c",'
+			current_token.append("char")
+		#print string
+		if(tokens == globals.argh_draft and flag_set[0] == 0 and flag_set[1] == 1):
+			prime_str += '"%s",'
+			current_token.append("string")	
+		#print double
+		if(tokens == globals.cutlass and flag_set[0] == 0 and flag_set[1] == 1):
+			prime_str += '"%lf",'
+			current_token.append("double")
+		#case 1 for ending printf
+		if(tokens == globals.string and "printf" in current_token):
+			prime_str += arr_tokens[1][i]
+			prime_str += ")"
+			current_token.append(")")
+			flag_set[1] = 0
+		#case 2 for ending printf
+		if(tokens == globals.idty and "printf" in current_token):
+			# debug()
+			prime_str += ")"
+			current_token.append(")")
+			flag_set[1] = 0
 
-#	Data Types
-		if eachtoken == globals.baybayin and willRead == False and willPrint == False:
-			final_string += "char "
-			tokenInLine.append("char")
-		if eachtoken == globals.bilang and willRead == False and willPrint == False:
-			final_string += "int "
-			tokenInLine.append("int")
-		if eachtoken == globals.lutang and willRead == False and willPrint == False:
-			final_string += "float "
-			tokenInLine.append("float")
-		
-#	Operators,etc
-		if eachtoken == globals.equals:
-			final_string += " = "
-			tokenInLine.append("=")
-		if eachtoken == globals.comparison:
-			if tokens[1][index] == '>= ':
-				final_string += ">="
-				tokenInLine.append(">=")
-			if tokens[1][index] == '<= ':
-				final_string += "<="
-				tokenInLine.append("<=")
-			if tokens[1][index] == '== ':
-				final_string += "=="
-				tokenInLine.append("==")
-			if tokens[1][index] == '> ':
-				final_string += ">"
-				tokenInLine.append("> ")
-			if tokens[1][index] == '< ':
-				final_string += "<"
-				tokenInLine.append("< ")
-		if eachtoken == globals.notsymbol:
-			final_string += "!"
-			tokenInLine.append("!")					
-		
-		if eachtoken == globals.operators:
-			tokens[1][index] = tokens[1][index].strip()
-			if tokens[1][index] == 'butal':
-				final_string += " % "
-				tokenInLine.append("%")
-			if tokens[1][index] == '+':
-				final_string += "+"
-				tokenInLine.append("+")
-			if tokens[1][index] == '-':
-				final_string += "-"
-				tokenInLine.append("-")
-			if tokens[1][index] == '*':
-				final_string += "*"
-				tokenInLine.append("*")
-			if tokens[1][index] == '/':
-				final_string += "/"
-				tokenInLine.append("/")			
+		#####scanf function#####
+		if(tokens == globals.plunder):
+			prime_str += "scanf("
+			current_token.append("scanf(")
+			flag_set[0] = 1
+		#scan variable
+		if(tokens == globals.idty and flag_set[0] == 1):
+			prime_str += arr_tokens[1][i].replace('var_','')
+			prime_str += ")"
+			current_token.append(")")
+			flag_set[0] = 0
+		#scan int
+		if(tokens == globals.fathom and arr_tokens[0][i-1] == globals.plunder):
+			prime_str += '"%d",&'
+		#scan flot
+		if(tokens == globals.league and arr_tokens[0][i-1] == globals.plunder):
+			prime_str += '"%f",&'
+			current_token.append('%f')
+		#scan character
+		if(tokens == globals.draft and arr_tokens[0][i-1] == globals.plunder):
+			prime_str += '"%c",'
+			current_token.append('%c')
+		#scan string
+		if(tokens == globals.argh_draft and arr_tokens[0][i-1] == globals.plunder):
+			prime_str += '"%s",'
+			current_token.append('%s')
+		#scan double
+		if(tokens == globals.cutlass and arr_tokens[0][i-1] == globals.plunder):
+			prime_str += '"%lf",&'
+			current_token.append('%lf')
+		#scan char or string pointer
+		if(tokens == globals.ptr and (arr_tokens[0][i-1] == globals.draft or arr_tokens[0][i-1] == globals.argh_draft)):
+			prime_str += '&'
+			current_token.append('ptr')
 
-		if eachtoken == bool:
-			if tokens[1][index] == 'tunay':
-				final_string += " true "
-				tokenInLine.append("true")	
-			if tokens[1][index] == 'palso':
-				final_string += " false "
-				tokenInLine.append("false")	
+		#####conditionals#####
+		#if
+		if(tokens == globals.galley):
+			prime_str += "if"
+			current_token.append("if")
+		#else if
+		if(tokens == globals.heave_ho):
+			prime_str += "else if"
+			current_token.append("else if")
+		#else
+		if(tokens == globals.heave):
+			prime_str += "else"
+			current_token.append("else")
 
-#	loops
-		if index < len(tokens[0])-2:
-			if tokens[1][index+1] == "(" and tokens[0][index] == globals.simula:
-				final_string += "for("	
-				tokenInLine.append("for(")
-				willLoop = True
-		if eachtoken == globals.lpar and tokens[0][index-1] == globals.simula:	
+		#####loop#####
+		#for loop 1
+		if(tokens == globals.walk):
+			prime_str += "for("	
+			current_token.append("for(")
+			flag_set[2] = 1
+		#for loop 2
+		if(tokens == globals.open_par and arr_tokens[0][i-1] == globals.walk):	
 			 continue
-		if eachtoken == globals.hanggang:
-			final_string += ";"
-			tokenInLine.append("hanggang")	 
-		# if eachtoken == globals.identifier and willLoop == True and "upto" not in tokenInLine:
-		# 	final_string += tokens[1][index].replace('_','')
-		# 	tokenInLine.append("upto")
-		# if eachtoken == globals.identifier and willLoop == True and "upto" in tokenInLine:
-		# 	final_string += "<"
-		# 	final_string += tokens[1][index].replace('_','')
-		if eachtoken == globals.identifier and tokens[0][index-2] == globals.simula and willLoop == True:
-			initial = tokens[1][index].replace('_','') 				
-		if eachtoken == globals.identifier and willLoop == True and tokens[0][index-1] != globals.hanggang:
-			final_string += tokens[1][index].replace('_','')	
-		if eachtoken == globals.identifier and tokens[0][index-1] == globals.hanggang:
-			final_string += initial
-			final_string += "<"
-			final_string += tokens[1][index].replace('_','')
-			final_string += ";"
-			final_string += initial
-			final_string += "+="
-			final_string += "1)"
-		if eachtoken == globals.kapag:
-			final_string += "if"
-			tokenInLine.append("if")	
-		if eachtoken == globals.gawin:
-			final_string += "do "
-			tokenInLine.append("do")	
-		if eachtoken == globals.habang:
-			final_string += "while "
-			tokenInLine.append("while")
+		if(tokens == globals.the_plank):
+			prime_str += ";"
+			current_token.append("the_plank")
+		if(tokens == globals.idty and arr_tokens[0][i-2] == globals.walk and flag_set[2] == 1):
+			init = arr_tokens[1][i].replace('var_','') 				
+		if(tokens == globals.idty and flag_set[2] == 1 and arr_tokens[0][i-1] != globals.the_plank):
+			prime_str += arr_tokens[1][i].replace('var_','')	
+		#for loop 3
+		if(tokens == globals.idty and arr_tokens[0][i-1] == globals.the_plank):
+			prime_str += init
+			prime_str += "<"
+			prime_str += arr_tokens[1][i].replace('var_','')
+			prime_str += ";"
+			prime_str += init
+			prime_str += "++)"
+		#while loop
+		if(tokens == globals.avast):
+			prime_str += "while"
+			current_token.append("while")
 
-	return final_string
+
+		#####functions#####
+		#start bracket
+		if(tokens == globals.curly_open and arr_tokens[0][i+1] != globals.open_par):
+			prime_str += "{"
+			current_token.append("{")
+		#end bracket
+		if(tokens == globals.curly_close):
+			prime_str += "}"
+			current_token.append("}")
+		#return function
+		if(tokens == globals.shiver_me):
+			prime_str += "return "
+			current_token.append("return")
+		#void function
+		if(tokens == globals.gangplank):
+			prime_str += "void "	
+			flag_set[3] = 1
+			prime_flag = 1
+			current_token.append("void")
+		#int function
+		if(tokens == globals.parrot):
+			prime_str += "int "	
+			flag_set[3] = 1
+			prime_flag = 1
+			current_token.append("int_main")
+		#end token function
+		if(tokens == globals.scurvy):
+			prime_flag = 0
+		#parameter set 1
+		if(tokens == globals.param1):
+			arr_tokens[1][i] = arr_tokens[1][i].replace('fathom', 'int')
+			arr_tokens[1][i] = arr_tokens[1][i].replace('league', 'float')
+			arr_tokens[1][i] = arr_tokens[1][i].replace('draft', 'char')
+			arr_tokens[1][i] = arr_tokens[1][i].replace('var_','')
+			prime_str += arr_tokens[1][i]
+			current_token.append('gawain')
+		#parameter set 2
+		if(tokens == globals.param2):
+			arr_tokens[1][i] = arr_tokens[1][i].replace('var_','')
+			prime_str += arr_tokens[1][i]
+			current_token.append(arr_tokens[1][i])
+		if('sail_ho' in current_token):
+			main_stack = 1
+
+		#####strlen#####
+		if(tokens == globals.nautical_len):
+			prime_str += "strlen("
+			current_token.append("strlen")
+		if(tokens == globals.idty and "strlen" in current_token):
+			prime_str += ")"
+
+		#####bracketing#####
+		if(tokens == 0 and flag_set[2] == 0 and (tok_len > 1 or (tok_len == 1 and not ("{" in current_token or "}" in current_token)))
+			and 'sail_ho' not in current_token and "if" not in current_token and "else if" not in current_token and "else" not in current_token 
+			and "while" not in current_token and "for" not in current_token and "void" not in current_token and "int_main" not in current_token):
+			prime_str += ";"
+			current_token = []
+		#(
+		if(tokens == globals.open_par and flag_set[2] == 0):
+			prime_str += "("
+			current_token.append("(")
+		#)
+		if(tokens == globals.close_par and flag_set[2] == 0):
+			prime_str += ")"
+			current_token.append(")")
+
+	print(prime_str)
+	return prime_str
+

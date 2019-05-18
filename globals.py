@@ -1,113 +1,169 @@
 def initialize():
-	global main_stack
-	global mainr
-	global simula_wakas
-	#global
-	global end
-	#datatype##############
-	global baybayin 
-	global bilang 	
-	global lutang		
-	global talaan_ba
-	global talaan_bi	
-	global talaan_lu	
-	#######################
+  #####data types######
+  #int
+  global fathom
+  #float
+  global league
+  #char
+  global draft 
+  #int_arr
+  global argh_fathom
+  #float_arr
+  global argh_league
+  #char_arr or string
+  global argh_draft 
 
-	global identifier 	
-	global comparison	
-	global equals	
-	global operators		
-	global notsymbol		
+  #####basic functions#####
+  #printf
+  global parley
+  #scanf
+  global plunder
+  #void
+  global gangplank
 
-	#values################
-	global char		
-	global integer			
-	global float			
-	global bool		
-	global string		
-	global int_arr		
-	global float_arr	
-	#######################
+  #####operations#####
+  #identifier
+  global idty
+  #comaparators
+  global comp
+  #equal
+  global equate
+  #operations
+  global oper 
+  #!
+  global nots
 
-	global and_or		
-	global lpar		
-	global rpar			
-	global simula	
-	global gawain		
-	global gawin			
-	global habang		
-	global ltpar			
-	global rtpar		
-	global hanggang	
-	global wakas 	
-	global ibalik	
-	global kawalan		 
-	global itaga	
-	global kada		
-	global kapag		
-	global basahin		
-	global katotohanan	
-	global formal_parameters
-	global informal_parameters 
+  #####c data types#####
+  #int
+  global integer
+  #float
+  global floating
+  #char
+  global char
+  #int[]
+  global int_arr 
+  #float[]
+  global float_arr 
+  #char[]
+  global string 
 
-	global dict
+  #####functions#####
+  global  sail_ho 
 
-	main_stack = -1
-	mainr = 0
-	simula_wakas = 0
+  #####bracekts#####
+  #(
+  global open_par 
+  #)
+  global  close_par 
+
+  #####conditionals#####
+  #if
+  global galley 
+  #else if
+  global heave_ho 
+  #else
+  global heave 
+
+  #####boolean#####
+  global boolean 
+
+  #####loops#####
+  #while
+  global avast 
+  #null this
+  global rig 
+
+  #####curly brackets#####
+  #{
+  global curly_open 
+  #}
+  global curly_close 
+
+  #####auxillary#####
+  #return
+  global shiver_me 
+  #int func
+  global parrot 
+  #for loop 1
+  global walk 
+  #for loop 2
+  global the_plank 
+  #end the function
+  global scurvy 
+  #strlen
+  global nautical_len 
+  #double
+  global cutlass 
+  #pointer
+  global ptr 
+  #double[]
+  global argh_cutlass
+  #logic_gates
+  global logic_gates 
+  #square_open
+  global sq_op 
+  #square_close
+  global sq_cl
 
 
-	#global
-	end				= 0
-	#datatype##############
-	baybayin 		= 1
-	bilang 			= 2
-	lutang			= 3
-	talaan_ba		= 5
-	talaan_bi		= 6
-	talaan_lu		= 7
-	#######################
+  global param1 
+  global param2 
 
-	identifier 		= 8
-	comparison		= 9
-	equals			= 10
-	operators		= 11
-	notsymbol		= 12
 
-	#values################
-	char			= 13
-	integer			= 14
-	float			= 15
-	bool			= 16
-	string			= 17
-	int_arr			= 18
-	float_arr		= 19
-	#######################
+  fathom = 1
+  league = 2
+  draft = 3
+  argh_fathom = 4
+  argh_league = 5
+  argh_draft = 6
 
-	and_or			= 20
-	lpar			= 21
-	rpar			= 22
-	simula			= 23
-	gawain			= 24
-	gawin			= 25
-	habang			= 26
-	ltpar			= 27
-	rtpar			= 28
-	hanggang		= 29
-	wakas			= 30
-	ibalik			= 31
-	kawalan		  	= 32
-	itaga			= 33
-	kada			= 36
-	kapag			= 37
-	basahin			= 38
-	katotohanan		= 39
-	formal_parameters = 40
-	informal_parameters = 41
 
-	dict = {1: 'baybayin', 2: 'bilang', 3: 'lutang', 5: 'talaan[]baybayin', 6: 'talaan[]bilang', 7: 'talaan[]lutang',
-			8: 'identifier', 9: 'comparison symbol', 10: 'equal symbol', 11: 'operator symbol', 12: 'not symbol', 13: 'char', 
-			14: 'integer', 15: 'float', 16: 'bool', 17: 'string', 18: 'int array', 19: 'float array', 20: 'and/or', 21: ')',
-			22: '(', 23: 'simula', 24: 'gawain', 25: 'gawin', 26: 'habang', 27: '<', 28: '>', 29: 'hanggang', 30: 'wakas',
-			31: 'ibalik', 32: 'kawalan', 33: 'itaga', 36: 'kada', 37: 'kapag', 38: 'basahin', 39: 'katotohanan', 40: 'formal parameter', 
-			41: 'informal parameter'}
+  parley = 7
+  plunder = 8
+  gangplank = 9
+
+  idty = 10
+  comp = 11
+  equate = 12
+  oper = 13
+  nots = 14
+
+  integer = 15
+  floating = 16
+  char = 17
+  int_arr = 18
+  float_arr = 19
+  string = 20
+
+  sail_ho = 21
+
+  open_par = 22
+  close_par = 23
+
+  galley = 24
+  heave_ho = 25
+  heave = 26
+
+  boolean = 27
+
+  avast = 28
+  rig = 29
+
+  curly_open = 30
+  curly_close = 31
+
+  shiver_me = 32
+  parrot = 33
+  walk = 34
+  the_plank = 35
+  scurvy = 36
+  nautical_len = 37
+  cutlass = 38
+  ptr = 39
+  argh_cutlass = 40
+  logic_gates = 41
+  sq_op = 42
+  sq_cl = 43
+
+  param1 = 50
+  param2 = 51

@@ -1,23 +1,12 @@
-import sys 	#for sys.argv
-import re	#for regex
-import globals 
-import tokens_rules
-import lexeranalyzer
-import syntaxanalyzer #not used -lois
+import globals
+import lexicalanalyzer
 import translator
 
-def parser(str_index, string, final_string, problem_string):
-
-	tabcount = len(string) - len(string.lstrip('\t'))	#count tabs at front
+def pirate_parser(idx,string,prime_str,error_str):
+	#debug()
 	string = string.lstrip('\t')
-
-	#lexical analysis
-	cont, tokens, problem_string = lexeranalyzer.lexanalysis(string, str_index, problem_string)
-	#return 1, final_string, problem_string
-	if cont == 0: return False, final_string, problem_string
-	#syntax analysis (good: lex)
-	#cont, problem_string = syntaxanalysis(tokens, str_index, problem_string)
-	#if cont == 0: return False, final_string, problem_string
-	#translator (good: lex and syntax)
-	final_string = translator.translator(tokens, final_string)
-	return True, final_string, problem_string
+	flag,arr_tokens, err_tokens = lexicalanalyzer.lexical_analysis(string,idx,error_str)
+	if(flag == 0):
+		return 0, prime_str,error_str
+	prime_str = translator.pirate_translator(arr_tokens,prime_str)
+	return 1, prime_str,error_str

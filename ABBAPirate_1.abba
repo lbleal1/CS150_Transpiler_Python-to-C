@@ -1,0 +1,25 @@
+gangplank var_leapyear(var_x)
+{
+	fathom var_y = 0
+	var_x = 1 + var_x
+	walk(fathom var_i) the_plank(var_x)
+	{
+		galley(var_i % 4 == 0)
+		{
+			parley fathom var_i
+			parley "\n"
+		}
+	}
+}
+scurvy
+
+parrot var_main()
+{
+	fathom var_x
+	parley "Input year: "
+	plunder fathom var_x
+	var_leapyear(var_x)
+
+	shiver_me 0
+}	
+scurvy
