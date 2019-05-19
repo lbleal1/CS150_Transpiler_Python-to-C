@@ -30,7 +30,7 @@ class P_Lexer(Lexer):
     COMPARISON = r'==|<=|>=|>|<|!='
     LOGICAL_OPERATORS = r'AND|OR|NOT'
     BLOCKS = r'{|}'
-    #OPERANDS = r'\+|-|\*|/|%'
+    ##OPERANDS = r'\+|-|\*|/|%'
 
     @_(r'\d+\.\d+')
     def FLOAT(selt, t):
