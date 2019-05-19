@@ -3,21 +3,20 @@ from sly import Parser
 import sys
 
 class P_Lexer(Lexer):
-    tokens = { VARIABLE, NUMBER, STRING, WRITE, READ, IF, THEN, ELSIF, ELSE, FOR, WHILE, DEF, COMPARISON, OPERANDS, DATA_TYPES, LOGICAL_OPERATORS, SKIP, STOP, RETURN, IN, RANGE, SH_OPERATORS }
+    tokens = { VARIABLE, NUMBER, STRING, WRITE, READ, IF, THEN, ELSIF, ELSE, WHILE, DEF, COMPARISON, OPERANDS, DATA_TYPES, LOGICAL_OPERATORS, SKIP, STOP, RETURN, SH_OPERATORS, IDENTIFIER }
     ignore = '\n\t '
 
     SH_OPERATORS = r'\+=|-=|\*=|/=|%='
     literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';', '%', ':', '{', '}' }
 
     # Define tokens
+    IDENTIFIER = r'%d|%s|%f'
     DATA_TYPES = r'INT|FLOAT|DOUBLE|STRING|BOOLEAN'
     LOGICAL_OPERATORS = r'AND|OR|NOT'
     IF = r'IF'
     THEN = r'THEN'
     ELSIF = r'ELSIF'
     ELSE = r'ELSE'
-    FOR = r'FOR'
-    IN = r'IN'
     DEF = r'DEF'
     WHILE = r'WHILE'
     WRITE = r'WRITE'
@@ -25,13 +24,9 @@ class P_Lexer(Lexer):
     SKIP = r'SKIP'
     STOP = r'STOP'
     RETURN = r'RETURN'
-    RANGE = r'RANGE'
     VARIABLE = r'[a-zA-Z_][a-zA-Z0-9_]*'
     STRING = r'\".*?\"'
-
     COMPARISON = r'==|<=|>=|>|<|!='
-    #BLOCKS = r'{|}'
-    #OPERANDS = r'\+|-|\*|/|%'
 
     @_(r'\d+\.\d+')
     def FLOAT(selt, t):
@@ -66,6 +61,14 @@ class P_Parser(Parser):
 	@_('')
 	def statement(self, p):
 		pass
+
+	@_('WRITE "(" STRING ")"')
+	def statement(self, p):
+		return ('write_stmt', p.STRING)
+
+	@_('READ "(" STRING "," VARIABLE")"')
+	def statement(self, p):
+		return 
 
 	@_('FOR VARIABLE IN RANGE "(" NUMBER "," NUMBER "," NUMBER ")" "{" statement "}"')
 	def statement(self, p):
@@ -135,6 +138,10 @@ class P_Parser(Parser):
 	def statement(self, p):
 		return (p.params)
 
+	@_('')
+	def statement(self, p):
+		return (p.params)
+
 	@_('params "," params')
 	def params(self, p):
 		return ('actual_params', p.params0, p.params1)
@@ -192,6 +199,36 @@ class P_Parser(Parser):
 		return ('num', p.NUMBER)
 
 		
+def translate_line(line_tokens):
+	global result_C
+	# variables,number stay as they are
+	mapping = { "STRING":"char*",
+                "INT": "int",
+                "FLOAT": "float",
+                "WRITE":"printf",
+                "READ": "scanf",
+                "IF": "if(",
+                "ELSE": "else",
+                "FOR": "for",
+                "WHILE": "while",
+                "DEF": "",
+                "RETURN": "return",
+                "INT": "int",
+                "MAIN": "main",
+                "AND": "&&",
+                "OR": "||",
+                "THEN": ")",
+                "STOP": "break",
+                "SKIP": "continue",
+                "ELSIF": "else if(",
+                "WHILE": "while"
+                }
+    for i in range(len(line_tokens)):
+		result_C += str(mapping.get(line_tokens[i].value, line_tokens[i].value)) + " "
+	if str(line_tokens[len(line_tokens)-1].value) == '{' or str(line_tokens[len(line_tokens)-1].value) == '}':
+		result_C += "\n"
+	else:
+		result_C += ";\n"
 
 if __name__ == '__main__':
 	lexer = P_Lexer()
@@ -202,6 +239,19 @@ if __name__ == '__main__':
 	P_Lines = P_File.readlines()
 	P_File.close()
 
-	for index, text in enumerate(P_Lines):
-		tree = parser.parse(lexer.tokenize(text))
-		print(tree)
+	libraries =  "#include <stdio.h>\n#include<string.h>\n#include<stdlib.h>\n\n\n"
+    result_C += libraries
+    for index, current_line in enumerate(P_Lines):
+        line_tokens =[]
+        current_line = current_line.rstrip()
+        lex = lexer.tokenize(current_line)
+        #tree = parser.parse(lexer.tokenize(text))
+        for token in lex:
+            line_tokens.append(token) #for each token considering one line
+        if len(line_tokens) !=0:
+            translate_line(line_tokens)
+        else:
+            result_C += "\n"
+    
+write_file = open("PtoC.c", "+w")
+write_file.write(result_C)
