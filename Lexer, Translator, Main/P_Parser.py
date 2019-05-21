@@ -3,6 +3,7 @@ from sly import Parser
 from P_Lexer import P_Lexer
 
 class P_Parser(Parser):
+    debugfile = 'debug.txt'
     tokens = P_Lexer.tokens
 
     precedence = (
@@ -17,11 +18,11 @@ class P_Parser(Parser):
 
     @_('WRITE "(" STRING ")"')
     def statement(self, p):
-        return ('write_stmt', p.STRING)
+        return ('write_stmt_str', p.STRING)
 
-    @_('READ "(" STRING "," VARIABLE ")"')
+    @_('READ "(" "\"" READ_OP "\"" "," "&" VARIABLE ")"')
     def statement(self, p):
-        return ('read_stmt', p.STRING, p.VARIABLE)
+        return ('read_stmt', p.READ_OP, p.VARIABLE)
 
     @_('SKIP')
     def statement(self, p):
@@ -31,7 +32,7 @@ class P_Parser(Parser):
     def statement(self, p):
         return (p.STOP)
 
-    @_('WHILE condition "{" statement "}"')
+    @_('WHILE condition THEN "{" statement "}"')
     def statement(self, p):
         return ('while_stmt', p.condition, p.statement)
 
@@ -47,7 +48,7 @@ class P_Parser(Parser):
     def elsif(self, p):
         pass
 
-    @_('ELSIF "{" statement "}" elsif')
+    @_('ELSIF THEN "{" statement "}" elsif')
     def elsif(self, p):
         return ('elsif.stmt', p.statement, p.elsif)
 
