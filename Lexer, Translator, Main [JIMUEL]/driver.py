@@ -24,7 +24,7 @@ def main():
         # Lexing, parsing
         current_line = current_line.rstrip()
         tokens = lexer.tokenize(current_line)
-        tree = parser.parse(tokens)
+        # tree = parser.parse(tokens)
         line_tokens = [token for token in tokens]
         
         # Translation
