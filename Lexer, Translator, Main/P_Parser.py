@@ -7,17 +7,13 @@ class P_Parser(Parser):
 
     precedence = (
         ('left', '+', '-'),
-        ('left', '%', '*', '/'),
-        ('right', 'UMINUS'),
+        ('left', '*', '/'),
+        ('right', 'UMINUS', '%'),
+        ('left', 'LEFTPRECEDENCE')
         )
 
     def __init__(self):
         self.env = { }
-
-    # ERROR: previosly defined (LINE 98)
-    # @_('')
-    # def statement(self, p):
-    #     pass
 
     @_('WRITE "(" STRING ")"')
     def statement(self, p):
@@ -25,11 +21,15 @@ class P_Parser(Parser):
 
     @_('READ "(" STRING "," VARIABLE ")"')
     def statement(self, p):
-        return 
+        return ('read_stmt', p.STRING, p.VARIABLE)
 
-    @_('FOR VARIABLE IN RANGE "(" NUMBER "," NUMBER "," NUMBER ")" "{" statement "}"')
+    @_('SKIP')
     def statement(self, p):
-        return ('for_stmt', p.VARIABLE, ('for_cond', p.NUMBER0, ('for_cond', p.NUMBER1, ('for_cond_stmt', p.NUMBER2, p.statement))))
+        return (p.SKIP)
+
+    @_('STOP')
+    def statement(self, p):
+        return (p.STOP)
 
     @_('WHILE condition "{" statement "}"')
     def statement(self, p):
@@ -51,7 +51,7 @@ class P_Parser(Parser):
     def elsif(self, p):
         return ('elsif.stmt', p.statement, p.elsif)
 
-    @_('statement ";" statement')
+    @_('statement ";" statement %prec LEFTPRECEDENCE')
     def statement(self, p):
         return('statements', p.statement0, p.statement1)
 
@@ -59,23 +59,51 @@ class P_Parser(Parser):
     def statement(self, p):
         return ('func_def', ('func_init', p.VARIABLE, p.params), p.statement)
 
-    @_('VARIABLE "(" params ")"')
+    @_('VARIABLE "(" params ")" %prec LEFTPRECEDENCE')
     def statement(self,p):
         return ('func_call', p.VARIABLE, p.params)
 
-    @_('VARIABLE "=" expr')
+    @_('VARIABLE "=" expr %prec LEFTPRECEDENCE')
     def statement(self, p):
         return ('local_Fvar', p.VARIABLE, p.expr)
 
-    @_('expr COMPARISON expr')
+    @_('condition LOGICAL_OPERATORS condition')
+    def statement(self, p):
+        return ('nested_cond_l', p.condition0, ('nested_cond_r', p.LOGICAL_OPERATORS, p.condition1))
+
+    @_('VARIABLE COMPARISON VARIABLE %prec LEFTPRECEDENCE')
     def condition(self, p):
-        return ('condition', p.expr0, p.expr1)
+        return ('condition_l', p.VARIABLE0, ('condition_r', p.COMPARISON, p.VARIABLE1))
+
+    @_('VARIABLE COMPARISON NUMBER %prec LEFTPRECEDENCE')
+    def condition(self, p):
+        return ('condition_l', p.VARIABLE, ('condition_r', p.COMPARISON, p.NUMBER))
+
+    @_('VARIABLE SH_OPERATORS NUMBER %prec LEFTPRECEDENCE')
+    def statement(self, p):
+        return('sh_op_l', p.VARIABLE, ('sh_op_r', p.SH_OPERATORS, p.NUMBER))
+
+    @_('TRUE')
+    def condition(self, p):
+        return (p.TRUE)
+
+    @_('FALSE')
+    def condition(self, p):
+        return (p.FALSE)
 
     @_('RETURN NUMBER')
     def statement(self, p):
         return ('return_num', p.NUMBER)
 
     @_('RETURN VARIABLE')
+    def statement(self, p):
+        return ('return_var', p.VARIABLE)
+
+    @_('RETURN TRUE')
+    def statement(self, p):
+        return ('return_var', p.VARIABLE)
+
+    @_('RETURN FALSE')
     def statement(self, p):
         return ('return_var', p.VARIABLE)
 
@@ -91,19 +119,11 @@ class P_Parser(Parser):
     def var_assign(self, p):
         return ('var_assign', p.VARIABLE, p.STRING)
 
-    @_('params')
-    def statement(self, p):
-        return (p.params)
-
-    @_('')
-    def statement(self, p):
-        return (p.params)
-
-    @_('params "," params')
+    @_('params "," params %prec LEFTPRECEDENCE')
     def params(self, p):
         return ('actual_params', p.params0, p.params1)
 
-    @_('DATA_TYPES params')
+    @_('DATA_TYPES params %prec LEFTPRECEDENCE')
     def params(self, p):
         return ('formal_params', p.DATA_TYPES, p.params)
 
@@ -142,10 +162,6 @@ class P_Parser(Parser):
     @_('"-" expr %prec UMINUS')
     def expr(self, p):
         return p.expr
-
-    @_('expr SH_OPERATORS NUMBER')
-    def expr(self, p):
-        return('sh_op', p.expr, p.NUMBER)
 
     @_('VARIABLE')
     def expr(self, p):
