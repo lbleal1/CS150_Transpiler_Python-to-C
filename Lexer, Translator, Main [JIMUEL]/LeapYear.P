@@ -1,0 +1,43 @@
+# TEST CASE 1
+# The first sample program should be a program that 
+# outputs all leap years within a range of years inputted by the user.
+
+# In the Gregorian calendar three criteria must be taken into account to identify leap years:
+# The year can be evenly divided by 4;
+# If the year can be evenly divided by 100, it is NOT a leap year, unless;
+# The year is also evenly divisible by 400. Then it is a leap year.
+
+DEF BOOL isALeapYear(INT year) {
+	BOOL result = FALSE
+
+	IF year % 4 == 0 THEN {
+		result = TRUE
+
+		IF year % 100 == 0 AND year % 400 != 0 THEN {
+			result = FALSE
+		}
+	}
+
+	RETURN result
+}
+
+DEF INT MAIN() { #this is a comment
+	INT year1 = 0
+	INT year2 = 0
+
+	WRITE("This program lists all leap years from year1 to year2.\n")
+	WRITE("year1: ") 
+	READ("%i", &year1)
+	WRITE("year2: ") 
+	READ("%i", &year2)
+
+	WHILE year1 <= year2 THEN {
+		IF isALeapYear(year1) THEN {
+			WRITE("%i\n", year1)
+		}
+
+		year1 += 1
+	}
+
+	RETURN 0
+}
