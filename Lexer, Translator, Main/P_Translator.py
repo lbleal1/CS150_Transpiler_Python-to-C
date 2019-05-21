@@ -11,7 +11,6 @@ class P_Translator:
             "READ": "scanf",
             "IF": "if(",
             "ELSE": "else",
-            "FOR": "for",
             "DEF": "",
             "RETURN": "return",
             "INT": "int",
