@@ -11,8 +11,8 @@ class P_Lexer(Lexer):
 
     # Define tokens
     SH_OPERATORS = r'\+=|-=|\*=|/=|%='
-    literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';', '%', ':', '&', ' ', '\t'}
-    DATA_TYPES = r'INT|FLOAT|DOUBLE|STRING|BOOLEAN'
+    literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';', '%', ':', '&', ' ', '\t', '{', '}'}
+    DATA_TYPES = r'INT|FLOAT|DOUBLE|STRING|BOOL'
     TRUE = r'TRUE'
     FALSE = r'FALSE'
     IF = r'IF'

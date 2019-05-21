@@ -1,9 +1,12 @@
 # Translator class
 class P_Translator:
-    def __init__(self):
-        self.mapping = { "STRING":"char*",
+    def __init__(self):        
+        self.mapping = { 
+            "STRING":"char*",
             "INT": "int",
             "FLOAT": "float",
+            "DOUBLE": "double",
+            "BOOL": "bool",
             "WRITE":"printf",
             "READ": "scanf",
             "IF": "if(",
@@ -20,9 +23,8 @@ class P_Translator:
             "SKIP": "continue",
             "ELSIF": "else if(",
             "WHILE": "while(",
-            "TRUE": "1", 
-            "FALSE": "0",
-            "BOOL": "bool"}
+            "TRUE": "true", 
+            "FALSE": "false"}
 
     def translate_line(self, line_tokens):
         result = ""
@@ -32,5 +34,4 @@ class P_Translator:
         if str(line_tokens[-1].value) not in ['{', '}']:
             result += ";"  
         result += "\n"        
-        
         return result

@@ -1,0 +1,53 @@
+# TEST CASE 1
+# Outputs all leap years within a range of years inputted by the user.
+# Input: INT year1, INT year2
+
+# Function isALeapYear(INT year)
+# Returns true if parameter year is a leap year
+# Parameter: INT year
+# Return value: Boolean TRUE or FALSE
+
+DEF BOOL isALeapYear(INT year) {
+	BOOL result = FALSE # Initializes a boolean type variable with initial value FALSE
+
+	# Evaluates lines inside the block when condition is satisfied
+	IF year % 4 == 0 THEN {
+		result = TRUE # Sets result to TRUE
+
+		# Sets result to FALSE when condition is satisfied
+		IF year % 100 == 0 AND year % 400 != 0 THEN {
+			result = FALSE
+		}
+	}
+
+	# Returns result
+	RETURN result
+}
+
+# Driver function MAIN()
+DEF INT MAIN() {
+	# Initializes an integer variables
+	INT year1 = 0 
+	INT year2 = 0 
+
+	# Prints string; Takes input
+	WRITE("This program lists all leap years from year1 to year2.\n")
+	WRITE("year1: ") 
+	READ("%i", &year1) # Takes input from user then stores it in variable year1
+	WRITE("year2: ") 
+	READ("%i", &year2) # Takes input from user then stores it in variable year2
+
+	# While loop; Stops when condition year1 <= year2 is not satisfied
+	WHILE year1 <= year2 THEN {
+		# Prints year1 when it is a leap year
+		IF isALeapYear(year1) THEN {
+			WRITE("%i\n", year1)
+		}
+
+		# Increments year1 by 1
+		year1 += 1
+	}
+
+	# Returns 0 to the system
+	RETURN 0
+}
