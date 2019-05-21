@@ -4,7 +4,7 @@ from sly import Lexer
 class P_Lexer(Lexer):
     tokens = {VARIABLE, NUMBER, STRING, WRITE, READ, IF, THEN, ELSIF, 
         ELSE, WHILE, DEF, COMPARISON, DATA_TYPES, LOGICAL_OPERATORS, 
-        SKIP, STOP, RETURN, SH_OPERATORS, TRUE, FALSE}
+        SKIP, STOP, RETURN, SH_OPERATORS, TRUE, FALSE, READ_OP}
     
     # Ignored character
     # ignore = '\t '
@@ -26,6 +26,7 @@ class P_Lexer(Lexer):
     SKIP = r'SKIP'
     STOP = r'STOP'
     RETURN = r'RETURN'
+    READ_OP = r'%d|%f|%s'
     VARIABLE = r'[a-zA-Z_][a-zA-Z0-9_]*'
     STRING = r'\".*?\"'
     COMPARISON = r'==|<=|>=|>|<|!='
