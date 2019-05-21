@@ -5,9 +5,9 @@ import sys
 
 def main():
     # Command line format error
-    if len(sys.argv) != 2:
+    if (len(sys.argv) != 2 or not(sys.argv[1].endswith('.p'))):
         print("Invalid arguments.")
-        print("Format: driver.py <name>.p")
+        print("Format: python3 driver.py <name>.p")
         exit()
 
     # Stores code from <name>.p file to P_Lines list
@@ -18,24 +18,24 @@ def main():
     lexer = P_Lexer()
     parser = P_Parser()
     translator = P_Translator()
-    result_C = "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\n"
-    
-    # For each P code in P_Lines: ...    
-    for index, current_line in enumerate(P_Lines):
-        current_line = current_line.rstrip()
+    result_C = "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stdbool.h>\n\n"
 
+    for index, current_line in enumerate(P_Lines):
         # Lexing, parsing
+        current_line = current_line.rstrip()
         tokens = lexer.tokenize(current_line)
         # tree = parser.parse(tokens)
         line_tokens = [token for token in tokens]
-
+        # for token in line_tokens:
+            # print(token)
+        # Translation
         if len(line_tokens) != 0:
             result_C += translator.translate_line(line_tokens)
         else:
             result_C += "\n"
-
+        
     # Writes result_C to file PtoC.c
-    with open("PtoC.c", "+w") as C_File:
+    with open(sys.argv[1].strip('.p').strip('.P') + ".c", "+w") as C_File:
         C_File.write(result_C)
 
 
