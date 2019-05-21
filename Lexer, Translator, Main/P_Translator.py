@@ -9,7 +9,6 @@ class P_Translator:
             "IF": "if(",
             "ELSE": "else",
             "FOR": "for",
-            "WHILE": "while",
             "DEF": "",
             "RETURN": "return",
             "INT": "int",
@@ -20,12 +19,15 @@ class P_Translator:
             "STOP": "break",
             "SKIP": "continue",
             "ELSIF": "else if(",
-            "WHILE": "while"}
+            "WHILE": "while(",
+            "TRUE": "1", 
+            "FALSE": "0",
+            "BOOL": "bool"}
 
     def translate_line(self, line_tokens):
         result = ""
         for token in line_tokens:
-            result += str(self.mapping.get(token.value, token.value)) + " "
+            result += str(self.mapping.get(token.value, token.value)) + ""
 
         if str(line_tokens[-1].value) not in ['{', '}']:
             result += ";"  
