@@ -3,22 +3,22 @@ from sly import Lexer
 
 class P_Lexer(Lexer):
     tokens = {VARIABLE, NUMBER, STRING, WRITE, READ, IF, THEN, ELSIF, 
-        ELSE, FOR, WHILE, DEF, COMPARISON, OPERANDS, DATA_TYPES, LOGICAL_OPERATORS, 
-        SKIP, STOP, RETURN, BLOCKS, IN, RANGE, SH_OPERATORS}
+        ELSE, WHILE, DEF, COMPARISON, DATA_TYPES, LOGICAL_OPERATORS, 
+        SKIP, STOP, RETURN, SH_OPERATORS, TRUE, FALSE}
     
     # Ignored character
-    ignore = '\t '
+    # ignore = '\t '
 
     # Define tokens
     SH_OPERATORS = r'\+=|-=|\*=|/=|%='
-    literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';', '%', ':' }
+    literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';', '%', ':', '&', ' ', '\t'}
     DATA_TYPES = r'INT|FLOAT|DOUBLE|STRING|BOOLEAN'
+    TRUE = r'TRUE'
+    FALSE = r'FALSE'
     IF = r'IF'
     THEN = r'THEN'
     ELSIF = r'ELSIF'
     ELSE = r'ELSE'
-    FOR = r'FOR'
-    IN = r'IN'
     DEF = r'DEF'
     WHILE = r'WHILE'
     WRITE = r'WRITE'
@@ -26,12 +26,10 @@ class P_Lexer(Lexer):
     SKIP = r'SKIP'
     STOP = r'STOP'
     RETURN = r'RETURN'
-    RANGE = r'RANGE'
     VARIABLE = r'[a-zA-Z_][a-zA-Z0-9_]*'
     STRING = r'\".*?\"'
     COMPARISON = r'==|<=|>=|>|<|!='
     LOGICAL_OPERATORS = r'AND|OR|NOT'
-    BLOCKS = r'{|}'
 
     @_(r'\d+\.\d+')
     def FLOAT(selt, t):
@@ -50,3 +48,7 @@ class P_Lexer(Lexer):
     @_(r'\n+')
     def newline(self,t ):
         self.lineno = t.value.count('\n')
+
+    def error(self, t):
+        print("Illegal character '%s'" % t.value[0])
+        self.index += 1
